@@ -1,18 +1,33 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <title>Hello GitHub</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>動画音量調整アプリ</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- フォントは Meiryo UI 固定 -->
   <style>
-    body {
-      font-family: "Meiryo UI", sans-serif;
-      text-align: center;
-      padding: 50px;
-    }
+    body { font-family: "Meiryo UI", sans-serif; }
   </style>
+  <!-- ffmpeg.wasm (CDN) -->
+  <script src="https://unpkg.com/@ffmpeg/ffmpeg@0.11.0/dist/ffmpeg.min.js"></script>
 </head>
 <body>
-  <h1>Hello GitHub Pages!</h1>
-  <p>これは公開テストページです。</p>
+  <h1>動画音量調整アプリ</h1>
+
+  <!-- ファイル選択 -->
+  <input type="file" id="uploader" accept="video/*" />
+
+  <!-- 音量調整入力 -->
+  <label for="volume">音量(dB):</label>
+  <input type="number" id="volume" min="1" max="100" value="50" />
+
+  <!-- 実行ボタン -->
+  <button id="processBtn">音量調整してダウンロード</button>
+
+  <!-- 進捗 -->
+  <div id="progress">進捗: 0%</div>
+
+  <script src="app.js"></script>
 </body>
 </html>
