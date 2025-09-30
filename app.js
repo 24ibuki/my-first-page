@@ -1,4 +1,6 @@
-const { FFmpeg } = FFmpegWASM;
+// ffmpegモジュールをwindowから取得
+const { FFmpeg } = window.FFmpeg;
+const { fetchFile } = window.FFmpegUtil;
 
 const ffmpeg = new FFmpeg({
   log: true,
@@ -26,35 +28,34 @@ processBtn.addEventListener("click", async () => {
   await ffmpeg.load();
 
   // ファイルを仮想FSに書き込む
-  await ffmpeg.writeFile(file.name, new Uint8Array(await file.arrayBuffer()));
+  await ffmpeg.writeFile(file.name, await fetchFile(file));
 
   // 出力ファイル名
   const outputName = "output.mp4";
 
-  // コマンド実行（音量調整）
-  const volumeValue = volumeInput.value;
-  ffmpeg.on("progress", ({ progress, time }) => {
+  // 進捗表示
+  ffmpeg.on("progress", ({ progress }) => {
     const percent = Math.round(progress * 100);
     progressDiv.innerText = `進捗: ${percent}%`;
   });
 
+  // 音量調整処理
+  const volumeValue = volumeInput.value;
   await ffmpeg.exec([
     "-i", file.name,
     "-af", `volume=${volumeValue}dB`,
     outputName
   ]);
 
-  // 結果を取得
+  // 結果を取得してダウンロード
   const data = await ffmpeg.readFile(outputName);
   const blob = new Blob([data.buffer], { type: "video/mp4" });
   const url = URL.createObjectURL(blob);
 
-  // ダウンロードリンク生成
   const a = document.createElement("a");
   a.href = url;
   a.download = outputName;
   a.click();
 
-  // 後始末
   URL.revokeObjectURL(url);
 });
